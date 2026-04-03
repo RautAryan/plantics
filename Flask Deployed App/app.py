@@ -6,14 +6,27 @@ import CNN
 import numpy as np
 import torch
 import pandas as pd
+import gdown
 
 
 disease_info = pd.read_csv('disease_info.csv' , encoding='cp1252')
 supplement_info = pd.read_csv('supplement_info.csv',encoding='cp1252')
 
-model = CNN.CNN(39)    
-model.load_state_dict(torch.load("plant_disease_model_1_latest.pt"))
+# model = CNN.CNN(39)
+# model.load_state_dict(torch.load("plant_disease_model_1_latest.pt"))
+# model.eval()
+
+model = CNN.CNN(39)
+
+model_path = "plant_disease_model_1_latest.pt"
+
+if not os.path.exists(model_path):
+    url = "https://drive.google.com/uc?id=1itvjp7C5pC8gGmY5Nuj4wAxcquvzUbO0"
+    gdown.download(url, model_path, quiet=False)
+
+model.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')))
 model.eval()
+
 
 def prediction(image_path):
     image = Image.open(image_path)
@@ -25,7 +38,7 @@ def prediction(image_path):
     index = np.argmax(output)
     return index
 
-
+os.makedirs('static/uploads', exist_ok=True)
 app = Flask(__name__)
 
 @app.route('/')
