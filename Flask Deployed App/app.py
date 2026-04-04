@@ -92,7 +92,7 @@ import torch
 import pandas as pd
 from flask import Flask, render_template, request
 from PIL import Image
-import torchvision.transforms.functional as TF
+#import torchvision.transforms.functional as TF
 import CNN
 
 # Load CSV files
